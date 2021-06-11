@@ -130,4 +130,46 @@ public class Menu {
         System.out.println("\n" + s);
     }
 
+    
+        /*
+
+        Double[] arrayLat = new Double[379];
+        Double[] arrayLong = new Double[379];
+        for(int i=1; i<380; i++){
+            for(int j=1; j<8;){
+                if(i>0){
+                    i++;
+                }
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            for (int j2 = 0; j2 < m; j2++) {
+                System.out.print(matriz[j][j2]);
+            }
+           System.out.println();
+        }
+
+        Scanner sc = new Scanner(new File("pontos_taxi.csv"));
+        sc.useDelimiter(" ");
+        int n = 380;
+        int m = 8;
+        String[][] matriz = new String[n][m];
+
+        int cont = 0;
+        while (sc.hasNext())  //returns a boolean value
+        {
+            String[] r = sc.nextLine().split(";");
+            for (int j = 0; j < r.length; j++) {
+                matriz[cont][j] = r[j];
+            }
+            cont++;
+        }
+        sc.close();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                print(matriz[i][j]);
+            }
+        }*/
+
 }
