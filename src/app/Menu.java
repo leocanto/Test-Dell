@@ -8,6 +8,8 @@ public class Menu {
     public static Scanner in = new Scanner(System.in);
     static double latitude = 0;
     static double longitude = 0;
+    static String lagradouro = " ";
+    static String[][] matriz = new String[380][8];
 
     public void dashBoard(int option) throws IOException {
         switch (option) {
@@ -26,6 +28,7 @@ public class Menu {
 
                 break;
             case 4:
+                informarLagradouro();
                 BuscarPontos();
 
                 break;
@@ -38,7 +41,7 @@ public class Menu {
     }
 
     public static void mostrarOpcoes() {
-        print("\nGreetings!\n");
+        print("\nBem-vindo!\n");
         print("1 -> Listar todos os pontos de taxi");
         print("2 -> Informar minha localização");
         print("3 -> Encontrar pontos próximos");
@@ -57,46 +60,24 @@ public class Menu {
         return 10;
     }
 
-    private void listarTodosPontos() throws IOException{
-        lerArquivo();
-    }
-
-    static void informarLocalizacao(){
+    public static void informarLocalizacao(){
         print("Informe a sua latitude: ");
         latitude = in.nextDouble();
         print("Informe a sua longitude: ");
         longitude = in.nextDouble(); 
     }
 
-    public void EncontrarPontos(){
-        
+    public static void informarLagradouro(){
+        print("> Para exibir o nome dos pontos de TAXI da região");
+        print("Digite o nome do lagradouro: ");
+        lagradouro = in.next();
     }
 
-    private void BuscarPontos(){
+    public void listarTodosPontos() throws IOException{
+        lerArquivo();
         
-    }
-
-    static void lerArquivo() throws IOException {
-        Scanner sc = new Scanner(new File("pontos_taxi.csv"));
-        sc.useDelimiter(" ");
-        int n = 380;
-        int m = 8;
-        String[][] matriz = new String[n][m];
-
-        int i = 0;
-        while (sc.hasNext()) 
-        {
-            String[] r = sc.nextLine().split(";");
-            for (int j = 0; j < r.length; j++) {
-                matriz[i][j] = r[j];
-            }
-            i++;
-        }
-        sc.close();
-
-        
-        for (int j = 1; j < n; j++) {
-            for (int j2 = 0; j2 < m; j2++) {
+        for (int j = 1; j < 380; j++) {
+            for (int j2 = 0; j2 < 8; j2++) {
                 if(j2 == 2){
                     System.out.println("> Ponto de TAXI " + j + ":");
                     System.out.println("Nome: " + matriz[j][j2]);
@@ -115,6 +96,56 @@ public class Menu {
         }
     }
 
+    public void EncontrarPontos() throws IOException{
+        //Double.parseDouble(new String())
+        lerArquivo();
+
+        String[] arrayLat = new String[379];
+        String[] arrayLong = new String[379];
+        
+
+        for (int j = 1; j < 380; j++) {
+            for (int j2 = 0; j2 < 8; j2++) {
+                if(j2 == 5){
+                    arrayLat[j] = matriz[j][j2];
+                    arrayLong[j] = matriz[j][j2+1];
+                }
+            }
+        }
+
+    }
+
+    public static void BuscarPontos() throws IOException{
+        lerArquivo();
+
+        System.out.println("\n" + "> Pontos de TAXI da regiao: ");
+        for (int j = 1; j < 380; j++) {
+            for (int j2 = 0; j2 < 8; j2++) {
+                if(j2 == 4){
+                   if(matriz[j][j2].contains(lagradouro)==true){
+                       System.out.println("\n" +"Endereco do ponto de TAXI: " + matriz[j][j2]);
+                       System.out.println("Nome do ponto de TAXI: " + matriz[j][j2-2]);
+                   }
+                }
+            }
+        }
+    }
+
+    public static void lerArquivo() throws IOException {
+        Scanner sc = new Scanner(new File("pontos_taxi.csv"));
+        sc.useDelimiter(" ");
+        int i = 0;
+        while (sc.hasNext()) 
+        {
+            String[] r = sc.nextLine().split(";");
+            for (int j = 0; j < r.length; j++) {
+                matriz[i][j] = r[j];
+            }
+            i++;
+        }
+        sc.close();
+    }
+
     public static double haversine(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
@@ -125,51 +156,9 @@ public class Menu {
         double c = 2 * Math.asin(Math.sqrt(a));
         return R * c;
     }
-        
+    
     public static void print(String s) {
         System.out.println("\n" + s);
     }
-
-    
-        /*
-
-        Double[] arrayLat = new Double[379];
-        Double[] arrayLong = new Double[379];
-        for(int i=1; i<380; i++){
-            for(int j=1; j<8;){
-                if(i>0){
-                    i++;
-                }
-            }
-        }
-        for (int j = 0; j < n; j++) {
-            for (int j2 = 0; j2 < m; j2++) {
-                System.out.print(matriz[j][j2]);
-            }
-           System.out.println();
-        }
-
-        Scanner sc = new Scanner(new File("pontos_taxi.csv"));
-        sc.useDelimiter(" ");
-        int n = 380;
-        int m = 8;
-        String[][] matriz = new String[n][m];
-
-        int cont = 0;
-        while (sc.hasNext())  //returns a boolean value
-        {
-            String[] r = sc.nextLine().split(";");
-            for (int j = 0; j < r.length; j++) {
-                matriz[cont][j] = r[j];
-            }
-            cont++;
-        }
-        sc.close();
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                print(matriz[i][j]);
-            }
-        }*/
 
 }

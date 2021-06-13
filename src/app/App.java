@@ -8,7 +8,7 @@ public class App {
         int input = Menu.lerRespostaDoUsuario();
         Menu m = new Menu();
 
-        while (input != 9) {
+        while (input != 9){ 
             m.dashBoard(input);
             input = Menu.lerRespostaDoUsuario();
         }
