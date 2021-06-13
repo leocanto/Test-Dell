@@ -15,6 +15,10 @@ public class Menu {
     static String[][] latLong = new String[380][8];
     static double[][] dLatLong = new double[380][8];
 
+    public Menu() throws IOException{
+        lerArquivo();
+    }
+
     //Painel aonde controla os métodos referentes aos inputs realizados pelo usuário.
     public void dashBoard(int option) throws IOException {
         switch (option) {
@@ -82,7 +86,7 @@ public class Menu {
                 in.next();
                 informarLocalizacao();
             }
-        }while (!(val));
+        }while (!val);
         print("Digite a sua longitude: ");
         do{
             if(in.hasNextDouble()){
@@ -94,7 +98,7 @@ public class Menu {
                 in.next();
                 informarLocalizacao();
             }
-        }while (!(val));
+        }while (!val);
         print("Localização armazenada.");
         
     }
@@ -109,8 +113,6 @@ public class Menu {
 
     //Método utuliza a função "lerArquivo" para fazer a leitura e o armazenamento dos dados CVS e armazenalos em uma matriz. Sendo assim, foi feito uma listagem dos dados de todos os pontos de TAXI do arquivo.
     public void listarTodosPontos() throws IOException{
-        lerArquivo();
-        
         //Percorre a matriz partindo da segunda linha, realizando o Print no terminal de acordo com os dados desejados, sendo controlados pelas colunas que estão representadas pela variável "j2".
         for (int j = 1; j < 380; j++) {
             System.out.println("> Ponto de TAXI " + j + ":");
@@ -125,8 +127,6 @@ public class Menu {
 
     //Método utuliza a função "lerArquivo" para fazer a leitura e o armazenamento dos dados CVS e armazenalos em uma matriz.Com isso, ele tem como objetivo alterar o tipo dos valores de latitude e longitude da matriz, os transformando de String para Double. Para isso acontecer, tive que substituir as virgulas por pontos para ter êxito no método.
     public void TratarArray() throws IOException{
-        lerArquivo();
-
         for (int j = 1; j < 380; j++) {
             for (int j2 = 6; j2 < 8; j2++) {
                 if(matriz[j][j2].indexOf(",") != -1){
@@ -171,21 +171,16 @@ public class Menu {
 
     //Método utuliza a função "lerArquivo" para fazer a leitura e o armazenamento dos dados CVS e armazenalos em uma matriz. Sendo assim, foi feito uma listagem de todos os pontos de TAXI referentes as regiões que contém o nome, ou pelo menos uma parte dele, fornecido pelo usuário.
     public static void BuscarPontos() throws IOException{
-        lerArquivo();
-
         //Percorre a matriz partindo da segunda linha, e se a coluna percorrida for a que representa o "lagradouro", verificamos se a String armazenada na matriz contém o input do usuário, se isso acontecer, será realizado um Print no terminal referente ao Ponto de TAXI da região informada.
         System.out.println("\n" + "> Pontos de TAXI da regiao: ");
         for (int j = 1; j < 380; j++) {
-            for (int j2 = 0; j2 < 8; j2++) {
-                if(j2 == 4){
-                   if(matriz[j][j2].contains(lagradouro)==true){
-                       System.out.println("\n" +"Endereco do ponto de TAXI: " + matriz[j][j2]);
-                       System.out.println("Nome do ponto de TAXI: " + matriz[j][j2-2]);
-                   }
-                }
+            if(matriz[j][4].contains(lagradouro)==true){
+                System.out.println("\n" +"Endereco do ponto de TAXI: " + matriz[j][4]);
+                System.out.println("Nome do ponto de TAXI: " + matriz[j][2]);
             }
         }
     }
+    
 
 
     //Lê o arquivo CSV fornecido e os dados separados por ";", são armazenados em uma matriz.
