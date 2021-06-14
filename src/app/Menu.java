@@ -43,11 +43,15 @@ public class Menu {
                 break;
 
             case 5:
-                print("Programa finalizado");
+                print("Programa finalizado.");
                 System.exit(0);
+
+            default:
+                System.out.println("Entrada inválida");
+
+                break;
+            }
         }
-        mostrarOpcoes();
-    }
 
     //Listagem do menu.
     public static void mostrarOpcoes() {
@@ -59,51 +63,55 @@ public class Menu {
         print("5. Terminar programa");
     }
 
-    //Lê a resposta do usuário e armazena no "input", criado na classe main.
+    //Lê a resposta do usuário e retorna a mesma, que é utilizada no "input", criado na classe main.
     public static int lerRespostaDoUsuario() {
-        print("Escolha uma das opções: ");
+        boolean val = false;
+        int valor = 0;
+        
+        do{
+            mostrarOpcoes();
+            print("Escolha uma das opções: ");
+            if(in.hasNextInt()){
+                valor = in.nextInt();
+                val = true;
+            }else{
+                System.out.println("Entrada inválida");
+                in.next();
+            }
+        }while (!val);
 
-        try {
-            return in.nextInt();
-        } catch (Error exception) {
-            print("O programa só aceita números inteiros");
-        }
-
-        return 10;
+        return valor;
     }
 
     //Pega o input do usuário referente a sua localização e armazena nas variáveis "latitude" e "longitude".
     public static void informarLocalizacao(){
-        boolean val = true;
-        print("Digite a sua latitude: ");
+        boolean val = false;
         do{
+            print("Digite a sua latitude: ");
             if(in.hasNextDouble()){
                 latitude = in.nextDouble();
                 val = true;
             }else{
                 System.out.println("Entrada inválida");
-                val = false;
                 in.next();
-                informarLocalizacao();
             }
         }while (!val);
-        print("Digite a sua longitude: ");
+
+        val = false;
         do{
+            print("Digite a sua longitude: ");
             if(in.hasNextDouble()){
                 longitude = in.nextDouble();
                 val = true;
             }else{
                 System.out.println("Entrada inválida");
-                val = false;
                 in.next();
-                informarLocalizacao();
             }
         }while (!val);
         print("Localização armazenada.");
-        
     }
 
-    //Pega o input do usuário referente a região aonde necessita saber a região do ponto de TAXI e armazena na variável "lagradouro".
+    //Pega o input do usuário referente a região aonde necessita o ponto de TAXI e armazena na variável "lagradouro".
     public static void informarLagradouro(){
         print("Digite todo ou parte do nome do logradouro: ");
         lagradouroAux = in.next();
@@ -111,9 +119,9 @@ public class Menu {
     }
 
 
-    //Método utuliza a função "lerArquivo" para fazer a leitura e o armazenamento dos dados CVS e armazenalos em uma matriz. Sendo assim, foi feito uma listagem dos dados de todos os pontos de TAXI do arquivo.
-    public void listarTodosPontos() throws IOException{
-        //Percorre a matriz partindo da segunda linha, realizando o Print no terminal de acordo com os dados desejados, sendo controlados pelas colunas que estão representadas pela variável "j2".
+    //Método faz uma listagem dos principais dados de todos os pontos de TAXI do arquivo.
+    public void listarTodosPontos(){
+        //Percorre a matriz partindo da segunda linha, realizando o Print no terminal de acordo com os dados desejados, sendo controlados por suas colunas".
         for (int j = 1; j < 380; j++) {
             System.out.println("> Ponto de TAXI " + j + ":");
             System.out.println("Nome: " + matriz[j][2]);
@@ -125,8 +133,8 @@ public class Menu {
         }
     }
 
-    //Método utuliza a função "lerArquivo" para fazer a leitura e o armazenamento dos dados CVS e armazenalos em uma matriz.Com isso, ele tem como objetivo alterar o tipo dos valores de latitude e longitude da matriz, os transformando de String para Double. Para isso acontecer, tive que substituir as virgulas por pontos para ter êxito no método.
-    public void TratarArray() throws IOException{
+    //O método tem como objetivo alterar o tipo dos valores de latitude e longitude da matriz, os transformando de String para Double. Para isso acontecer, tive que substituir as virgulas por pontos para ter êxito no método.
+    public void TratarArray(){
         for (int j = 1; j < 380; j++) {
             for (int j2 = 6; j2 < 8; j2++) {
                 if(matriz[j][j2].indexOf(",") != -1){
@@ -151,8 +159,8 @@ public class Menu {
 
         //Foi utilizado a função disponibilizada "haversine", que cálcula a distância entre latitudes e longitudes.
         for (int j = 1; j < 380; j++) {
-                    dist[j] = haversine(latitude, longitude, dLatLong[j][6], dLatLong[j][7]);
-                    distAux[j] = haversine(latitude, longitude, dLatLong[j][6], dLatLong[j][7]);
+            dist[j] = haversine(latitude, longitude, dLatLong[j][6], dLatLong[j][7]);
+            distAux[j] = haversine(latitude, longitude, dLatLong[j][6], dLatLong[j][7]);
              
         }
         Arrays.sort(distAux);
@@ -160,28 +168,37 @@ public class Menu {
         menorDist[0] = distAux[1];
         menorDist[1] = distAux[2];
         menorDist[2] = distAux[3];
-
+        int cont = 0;
         System.out.println("Os pontos de taxi mais próximos são: ");
         for (int j = 1; j < 380; j++) {
             if(dist[j]==menorDist[0] || dist[j]==menorDist[1] || dist[j]==menorDist[2]){
             System.out.println("Nome: " + matriz[j][2]);
+            cont++;
+            }
+            if(cont == 3){
+                break;
             }
         }
     }
 
-    //Método utuliza a função "lerArquivo" para fazer a leitura e o armazenamento dos dados CVS e armazenalos em uma matriz. Sendo assim, foi feito uma listagem de todos os pontos de TAXI referentes as regiões que contém o nome, ou pelo menos uma parte dele, fornecido pelo usuário.
-    public static void BuscarPontos() throws IOException{
-        //Percorre a matriz partindo da segunda linha, e se a coluna percorrida for a que representa o "lagradouro", verificamos se a String armazenada na matriz contém o input do usuário, se isso acontecer, será realizado um Print no terminal referente ao Ponto de TAXI da região informada.
+    //Método tem como objetivo listar todos os pontos de TAXI localizados nas regiões que contém o nome, ou pelo menos uma parte dele, fornecido pelo usuário.
+    public static void BuscarPontos(){
+        int cont = 0;
+
+        //Percorre a matriz partindo da segunda linha, e verifica se a String armazenada na matriz contém o input do usuário, se isso acontecer, será realizado um Print no terminal referente ao Ponto de TAXI da região informada.
         System.out.println("\n" + "> Pontos de TAXI da regiao: ");
         for (int j = 1; j < 380; j++) {
             if(matriz[j][4].contains(lagradouro)==true){
+                cont++;
                 System.out.println("\n" +"Endereco do ponto de TAXI: " + matriz[j][4]);
                 System.out.println("Nome do ponto de TAXI: " + matriz[j][2]);
             }
         }
+        if(cont == 0){
+            System.out.println("Não existe pontos de TAXI nessa regiao.");
+        }
     }
     
-
 
     //Lê o arquivo CSV fornecido e os dados separados por ";", são armazenados em uma matriz.
     public static void lerArquivo() throws IOException {
